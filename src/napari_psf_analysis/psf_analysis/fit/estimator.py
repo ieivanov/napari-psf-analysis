@@ -10,21 +10,23 @@ from napari_psf_analysis.psf_analysis.utils import compute_cov_matrix
 class Estimator:
     image: Calibrated3DImage = None
     sample: Sample = None
-    _background: np.uint16 = None
-    _amplitude: np.uint16 = None
+    _background: np.float64 = None
+    _amplitude: np.float64 = None
 
     def __init__(self, image: Calibrated3DImage):
         self.image = image
 
-    def get_background(self) -> np.uint16:
+    def get_background(self) -> np.float64:
         if self._background is None:
-            self._background = np.median(self.image.data).astype(np.uint16)
+            self._background = np.median(self.image.data).astype(np.float64)
 
         return self._background
 
-    def get_amplitude(self) -> np.uint16:
+    def get_amplitude(self) -> np.float64:
         if self._amplitude is None:
-            self._amplitude = self.sample.image.data.max() - self.get_background()
+            self._amplitude = (
+                self.sample.image.data.max().astype(np.float64) - self.get_background()
+            )
 
         return self._amplitude
 
